@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
@@ -33,6 +35,10 @@ repositories {
 dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.opentest4j)
+    testRuntimeOnly(libs.junit5JupiterEngine)
+    testRuntimeOnly(libs.junit5VintageEngine)
+    testRuntimeOnly(libs.junit5PlatformLauncher)
+    testRuntimeOnly(libs.junit5PlatformConsole)
 
     // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
     intellijPlatform {
@@ -152,5 +158,19 @@ intellijPlatformTesting {
                 robotServerPlugin()
             }
         }
+    }
+
+    testIde {
+        register("myCustomTestTask") {
+            task {
+                group = "verification"
+            }
+        }
+    }
+}
+
+tasks {
+    withType<Test> {
+        useJUnitPlatform()
     }
 }
